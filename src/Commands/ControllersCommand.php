@@ -62,7 +62,7 @@ class ControllersCommand extends Command
     public function handle()
     {
         $stub = $this->getStub();
-        $files = $this->filesystem->files(base_path('vendor/tcg/voyager/src/Http/Controllers'));
+        $files = $this->filesystem->files(base_path('vendor/neurotools/voyager/src/Http/Controllers'));
         $namespace = config('voyager.controllers.namespace', 'TCG\\Voyager\\Http\\Controllers');
 
         $appNamespace = app()->getNamespace();
@@ -104,7 +104,7 @@ class ControllersCommand extends Command
      */
     public function getStub()
     {
-        return $this->filesystem->get(base_path('/vendor/tcg/voyager/stubs/'.$this->stub));
+        return $this->filesystem->get(base_path('/vendor/neurotools/voyager/stubs/'.$this->stub));
     }
 
     /**

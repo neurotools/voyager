@@ -64,13 +64,13 @@ You can specify the namespace or location of your models. This is used when crea
 ```php
 <?php
 
-'assets_path' => '/vendor/tcg/voyager/assets',
+'assets_path' => '/vendor/neurotools/voyager/assets',
 ```
 
 You may wish to specify a different asset path. If your site lives in a subfolder you may need to include that directory to the beginning of the path. This may also be used in case you wish to duplicate the published assets and customize your own.
 
 {% hint style="info" %}
-When upgrading to new version of voyager the assets located in the `/vendor/tcg/voyager/assets` directory may need to be overwritten, so if you wish to customize any styles you will want to duplicate that directory and specify the new location of your asset\_path.
+When upgrading to new version of voyager the assets located in the `/vendor/neurotools/voyager/assets` directory may need to be overwritten, so if you wish to customize any styles you will want to duplicate that directory and specify the new location of your asset\_path.
 {% endhint %}
 
 ## Storage
@@ -156,7 +156,7 @@ In the dashboard config you can add **navbar\_items**, make the **data\_tables**
 
 **data\_tables** If you set 'responsive' to true the datatables will be responsive.
 
-**widgets** Here you can manage the widgets that live on your dashboard. You can take a look at an example widget class by viewing the current widgets inside of `tcg/voyager/src/Widgets`.
+**widgets** Here you can manage the widgets that live on your dashboard. You can take a look at an example widget class by viewing the current widgets inside of `neurotools/voyager/src/Widgets`.
 
 ## Primary color
 
