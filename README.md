@@ -37,9 +37,11 @@ View the Voyager Cheat Sheet: https://voyager-cheatsheet.ulties.com/
 
 <hr>
 
-Laravel Admin & BREAD System (Browse, Read, Edit, Add, & Delete), supporting Laravel 8 and newer!
+Laravel Admin & BREAD System (Browse, Read, Edit, Add, & Delete), supporting Laravel 10 and newer!
 
 > Want to use Laravel 6 or 7? Use [Voyager 1.5](https://github.com/neurotools/voyager/tree/1.5)
+
+> Want to use Laravel 8 or 9? Use [Voyager 1.6](https://github.com/neurotools/voyager/tree/1.6)
 
 ## Installation Steps
 
@@ -49,12 +51,6 @@ After creating your new Laravel application you can include the Voyager package 
 
 ```bash
 composer require neurotools/voyager
-```
-
-> If you are installing this on Laravel 10, we are working on getting a permanent release available; however, you can still use this with Larvel 10 by requiring the following:
-
-```bash
-composer require neurotools/voyager dev-1.6-l10
 ```
 
 ### 2. Add the DB Credentials & APP_URL
