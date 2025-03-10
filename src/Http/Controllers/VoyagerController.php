@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Constraint;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Laravel\Facades\Image;
 use TCG\Voyager\Facades\Voyager;
 
 class VoyagerController extends Controller
@@ -54,15 +55,10 @@ class VoyagerController extends Controller
         $ext = $file->guessClientExtension();
 
         if (in_array($ext, ['jpeg', 'jpg', 'png', 'gif'])) {
-            $image = Image::make($file)
-                ->resize($resizeWidth, $resizeHeight, function (Constraint $constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-            if ($ext !== 'gif') {
-                $image->orientate();
-            }
-            $image->encode($file->getClientOriginalExtension(), 75);
+            $image = Image::read($file)
+                ->scaleDown($resizeWidth, $resizeHeight);
+            
+            $image->encode(new AutoEncoder(quality: 75));
 
             // move uploaded file from temp to uploads directory
             if (Storage::disk(config('voyager.storage.disk'))->put($fullPath, (string) $image, 'public')) {

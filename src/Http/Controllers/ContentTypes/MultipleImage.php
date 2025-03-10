@@ -5,7 +5,8 @@ namespace TCG\Voyager\Http\Controllers\ContentTypes;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Constraint;
-use Intervention\Image\Facades\Image as InterventionImage;
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Laravel\Facades\Image as InterventionImage;
 
 class MultipleImage extends BaseType
 {
@@ -26,7 +27,7 @@ class MultipleImage extends BaseType
                 continue;
             }
 
-            $image = InterventionImage::make($file)->orientate();
+            $image = InterventionImage::read($file);
 
             $resize_width = null;
             $resize_height = null;
@@ -52,16 +53,17 @@ class MultipleImage extends BaseType
             array_push($filesPath, $path.$filename.'.'.$file->getClientOriginalExtension());
             $filePath = $path.$filename.'.'.$file->getClientOriginalExtension();
 
-            $image = $image->resize(
-                $resize_width,
-                $resize_height,
-                function (Constraint $constraint) {
-                    $constraint->aspectRatio();
-                    if (isset($this->options->upsize) && !$this->options->upsize) {
-                        $constraint->upsize();
-                    }
-                }
-            )->encode($file->getClientOriginalExtension(), $resize_quality);
+            if (isset($this->options->upsize) && !$this->options->upsize) {
+                $image = $image->scaleDown(
+                    $resize_width,
+                    $resize_height,
+                )->encode(new AutoEncoder(quality: $resize_quality));
+            } else {
+                $image = $image->scale(
+                    $resize_width,
+                    $resize_height,
+                )->encode(new AutoEncoder(quality: $resize_quality));
+            }
 
             Storage::disk(config('voyager.storage.disk'))->put($filePath, (string) $image, 'public');
 
@@ -80,25 +82,25 @@ class MultipleImage extends BaseType
                             $thumb_resize_height = $thumb_resize_height * $scale;
                         }
 
-                        $image = InterventionImage::make($file)
-                            ->orientate()
-                            ->resize(
-                                $thumb_resize_width,
-                                $thumb_resize_height,
-                                function (Constraint $constraint) {
-                                    $constraint->aspectRatio();
-                                    if (isset($this->options->upsize) && !$this->options->upsize) {
-                                        $constraint->upsize();
-                                    }
-                                }
-                            )->encode($file->getClientOriginalExtension(), $resize_quality);
+                        if (isset($this->options->upsize) && !$this->options->upsize) {
+                            $image = InterventionImage::read($file)
+                                ->scaleDown(
+                                    $thumb_resize_width,
+                                    $thumb_resize_height,
+                                )->encode(new AutoEncoder(quality: $resize_quality));
+                        } else {
+                            $image = InterventionImage::read($file)
+                                ->scale(
+                                    $thumb_resize_width,
+                                    $thumb_resize_height,
+                                )->encode(new AutoEncoder(quality: $resize_quality));
+                        }
                     } elseif (isset($this->options->thumbnails) && isset($thumbnails->crop->width) && isset($thumbnails->crop->height)) {
                         $crop_width = $thumbnails->crop->width;
                         $crop_height = $thumbnails->crop->height;
-                        $image = InterventionImage::make($file)
-                            ->orientate()
-                            ->fit($crop_width, $crop_height)
-                            ->encode($file->getClientOriginalExtension(), $resize_quality);
+                        $image = InterventionImage::read($file)
+                            ->cover($crop_width, $crop_height)
+                            ->encode(new AutoEncoder(quality: $resize_quality));
                     }
 
                     Storage::disk(config('voyager.storage.disk'))->put(
